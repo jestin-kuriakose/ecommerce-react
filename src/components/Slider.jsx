@@ -1,6 +1,7 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons"
+import { useState } from "react"
 import styled from "styled-components"
-import sliderItems from "../data"
+import {sliderItems} from "../data"
 
 const Container = styled.div`
     width: 100%;
@@ -31,7 +32,8 @@ const Arrow = styled.div`
 const Wrapper = styled.div`
   height: 100%;
   display: flex;
-  transform: translateX(-200vw);
+  transition: all 1.5s ease;
+  transform: translateX(${props=>props.slideIndex * -100}vw);
 `
 
 const Slide = styled.div`
@@ -69,10 +71,16 @@ const Button = styled.button`
   cursor: pointer;
 `
 
-const Slider = () => {
+const Slider = (props) => {
+
+  const [slideIndex, setSlideIndex] = useState(0);
 
   const handleClick = (direction) => {
-    
+    if(direction === "left") {
+       setSlideIndex(slideIndex > 0 ? slideIndex-1 : 2)
+    } else {
+      setSlideIndex(slideIndex<2 ? slideIndex+1 : 0)
+    }
   }
 
   return (
@@ -80,20 +88,21 @@ const Slider = () => {
       <Arrow direction="left" onClick={()=> handleClick("left")}>
         <ArrowLeftOutlined />
       </Arrow>
-      <Wrapper>
+      <Wrapper slideIndex={slideIndex}>
+        {sliderItems.map((item) => (
 
-        <Slide bg="f5fafd">
+          <Slide bg={item.bg} key={item.id}>
           <ImgContainer>
-            <Image src="https://i.ibb.co/Ybfw1WM/evie-s-vz3-IQy0-LOa-A-unsplash-removebg-preview.png"/>
+            <Image src={item.img}/>
           </ImgContainer>
           <InfoContainer>
-            <Title>SUMMER SALE</Title>
-            <Desc>DON'T COMPROMISE ON STYLE !</Desc>
+            <Title>{item.title}</Title>
+            <Desc>{item.desc}</Desc>
             <Button>SHOP NOW</Button>
           </InfoContainer>
         </Slide>
-        
-        
+
+        ) )}
 
       </Wrapper>
       <Arrow direction="right" onClick={()=> handleClick("right")}>
